@@ -1,258 +1,175 @@
-- title : React Native with F#
-- description : Introduction to React Native with F#
-- author : Steffen Forkmann
-- theme : night
-- transition : default
+- title : Git für TFS Benutzer
+- description : Einführung in Git und GitLab
+- author : Martin Gondermann
+- theme : Beige
+- transition : slide
 
 ***
 
-## React Native with F#
+## Git für TFS Benutzer
 
 <br />
 <br />
 
-### Modern mobile app development
+### Einführung in Git und GitLab
 
 <br />
 <br />
-Steffen Forkmann - [@sforkmann](http://www.twitter.com/sforkmann)
+Martin Gondermann - [@magicmonty](http://www.twitter.com/magicmonty)
 
 ***
 
-### Modern mobile app development?
+### TLDR
 
-* UI/UX
-    * "Native mobile apps"
-    * Performance
-* Tooling
-    * Hot loading
-    * IntelliSense
-* Maintainability
-    * Easy to debug
-    * Correctness
+#### Vergleich TFS ↔ Git
 
----
-
-### "Native" UI
-
- <img src="images/meter.png" style="background: transparent; border-style: none;"  width=300 />
+| TFS           | Git                          |
+| ------------- | ---------------------------- |
+| Zentralisiert | Verteilt                     |
+| Workspace     | Repository (aka. "Repo")     |
+| Changeset     | Commit hash                  |
+| Code Review     | Merge- oder Pull-Request  |
 
 ---
 
-### Tooling
+### TLDR
 
-<img src="images/hotloading.gif" style="background: transparent; border-style: none;"  />
+#### Vergleich TFS ↔ Git
 
-*** 
-
-### Model - View - Update
-
-#### "Elm - Architecture"
-
- <img src="images/Elm.png" style="background: white;" width=700 />
-
-
- <small>http://danielbachler.de/2016/02/11/berlinjs-talk-about-elm.html</small>
-
-
---- 
-
-### Model - View - Update
-
-    // MODEL
-
-    type Model = int
-
-    type Msg =
-    | Increment
-    | Decrement
-
-    let init() : Model = 0
+| TFS             | Git                       |
+| --------------- | ------------------------- |
+| Get Latest    | `clone` (1. mal) bzw. `pull` |
+| Check in        | `git commit` & `git push` |
+| Check out       | Nicht notwendig           |
+| Pending changes | `git status`              |
 
 ---
 
-### Model - View - Update
+### TLDR
 
-    // VIEW
+#### Vergleich TFS ↔ Git
 
-    let view model dispatch =
-        div []
-            [ button [ OnClick (fun _ -> dispatch Decrement) ] [ str "-" ]
-              div [] [ str (model.ToString()) ]
-              button [ OnClick (fun _ -> dispatch Increment) ] [ str "+" ] ]
-
----
-
-### Model - View - Update
-
-    // UPDATE
-
-    let update (msg:Msg) (model:Model) =
-        match msg with
-        | Increment -> model + 1
-        | Decrement -> model - 1
-
----
-
-### Model - View - Update
-
-    // wiring things up
-
-    Program.mkSimple init update view
-    |> Program.withConsoleTrace
-    |> Program.withReact "elmish-app"
-    |> Program.run
-
----
-
-### Model - View - Update
-
-# Demo
+| TFS       | Git                   |
+| --------- | --------------------- |
+| Branch    | Branch - `git branch` |
+| Label     | Tag - `git tag`       |
+| Shelveset | Stash - `git stash`   |
+| Merge     | Merge - `git merge`   |
 
 ***
 
-### Sub-Components
+### Zentralisiert vs. Verteilt
 
-    // MODEL
+#### Zentralisiert
 
-    type Model = {
-        Counters : Counter.Model list
-    }
-
-    type Msg = 
-    | Insert
-    | Remove
-    | Modify of int * Counter.Msg
-
-    let init() : Model =
-        { Counters = [] }
+<img src="images/centralized.png" style="background: transparent; border-style: none;"  width=600 />
 
 ---
 
-### Sub-Components
+### Zentralisiert vs. Verteilt
 
-    // VIEW
+#### verteilt
 
-    let view model dispatch =
-        let counterDispatch i msg = dispatch (Modify (i, msg))
-
-        let counters =
-            model.Counters
-            |> List.mapi (fun i c -> Counter.view c (counterDispatch i)) 
-        
-        div [] [ 
-            yield button [ OnClick (fun _ -> dispatch Remove) ] [  str "Remove" ]
-            yield button [ OnClick (fun _ -> dispatch Insert) ] [ str "Add" ] 
-            yield! counters ]
-
----
-
-### Sub-Components
-
-    // UPDATE
-
-    let update (msg:Msg) (model:Model) =
-        match msg with
-        | Insert ->
-            { Counters = Counter.init() :: model.Counters }
-        | Remove ->
-            { Counters = 
-                match model.Counters with
-                | [] -> []
-                | x :: rest -> rest }
-        | Modify (id, counterMsg) ->
-            { Counters =
-                model.Counters
-                |> List.mapi (fun i counterModel -> 
-                    if i = id then
-                        Counter.update counterMsg counterModel
-                    else
-                        counterModel) }
-
----
-
-### Sub-Components
-
-# Demo
+<img src="images/distributed.png" style="background: transparent; border-style: none;"  width=400 />
 
 ***
 
-### React
+### Snapshots vs. Deltas
 
-* Facebook library for UI 
-* <code>state => view</code>
-* Virtual DOM
+#### TFS - Deltas
 
----
+<img src="images/deltas.png" style="background: transparent; border-style: none;"  width=700 />
 
-### Virtual DOM - Initial
-
-<br />
-<br />
-
-
- <img src="images/onchange_vdom_initial.svg" style="background: white;" />
-
-<br />
-<br />
-
- <small>http://teropa.info/blog/2015/03/02/change-and-its-detection-in-javascript-frameworks.html</small>
+' Der Hauptunterschied zwischen Git und anderen VCS (Subversion and friends included) ist die Art in der Git seine Daten sieht.
+' Die meisten anderen System speichern Informationen als eine Liste von Datei-basierten Änderungen.
+' Diese Systeme betrachten die Informationen als eine Menge von Dateien und den Änderungen, die auf jeder Datei über die Zeit gemacht werden.
 
 ---
 
-### Virtual DOM - Change
+### Snapshots vs. Deltas
 
-<br />
-<br />
+#### Git - Snapshots
 
+<img src="images/snapshots.png" style="background: transparent; border-style: none;"  width=700 />
 
- <img src="images/onchange_vdom_change.svg" style="background: white;" />
-
-<br />
-<br />
-
- <small>http://teropa.info/blog/2015/03/02/change-and-its-detection-in-javascript-frameworks.html</small>
-
----
-
-### Virtual DOM - Reuse
-
-<br />
-<br />
-
-
- <img src="images/onchange_immutable.svg" style="background: white;" />
-
-<br />
-<br />
-
- <small>http://teropa.info/blog/2015/03/02/change-and-its-detection-in-javascript-frameworks.html</small>
-
-
-*** 
-
-### ReactNative
-
- <img src="images/ReactNative.png" style="background: white;" />
-
-
- <small>http://timbuckley.github.io/react-native-presentation</small>
+' Git betrachtet seine Daten eher als einen Strom von Snapshots eines Miniatur-Dateisystems.
+' Jedesmal, wenn man commited, macht Git einfach gesagt ein Snapshot des aktuellen Zustands aller Dateien zu diesem Zeitpunkt und speichert eine Referenz.
+' Um effizient zu sein, speichert Git nicht geänderte Dateien nicht, sondern nur einen Link zur vorhergenden identischen Version.
 
 ***
 
-### Show me the code
+### Commit vs. Check in
 
-*** 
+* **TFS:**
+  * Check in sendet geänderte Daten an den Server
+  * ein lokaler Commit ist nicht möglich
+* **Git:**
+  * `commit` speichert Änderungen im lokalen Repository
+  * `push` sendet die Änderungen im lokalen Repository an den Server
 
-### TakeAways
+***
 
-* Learn all the FP you can!
-* Simple modular design
+### Branching
 
-*** 
+#### TFS
 
-### Thank you!
+* Branch wird auf dem Server erstellt
+* Branch wird dann in einem extra Verzeichnis auf den lokalen Rechner synchronisiert
+* relative langsame ("teure") Operation, daher nur selten benutzt
 
-* https://github.com/fable-compiler/fable-elmish
-* https://ionide.io
-* https://facebook.github.io/react-native/
+---
+
+### Branching
+
+#### Git
+
+* Branch erstellen ist nur das Setzen eines Namens auf einen Commit
+* Es wird immer im selben Verzeichnis operiert.
+* Branch wechseln ist sehr schnell, da nur die geänderten Dateien im Verzeichnis angepasst werden
+* Wird häufig benutzt z.B. für
+  * Feature-Branches (kurzlebig)
+  * Bugfix-Branches (kurzlebig)
+  * Release-Branches (langlebig)
+
+***
+
+### Git Clients
+
+* Kommandozeile: `git` Kommando
+* Eingebaut in Visual Studio / VS Code
+  * nur die einfachsten Kommandos, für den normalen Betrieb aber durchaus ausreichend
+* externe Grafische Clients:
+  * SourceTree - https://www.sourcetreeapp.com/
+  * Tower - https://www.git-tower.com/windows/
+  * GitKraken - https://www.gitkraken.com/
+
+---
+
+### Git Clients
+
+#### SourceTree
+
+<img src="images/sourcetree.png" style="background: transparent; border-style: none;"  width=700 />
+
+---
+
+### Git Clients
+
+#### Tower
+
+<img src="images/tower.png" style="background: transparent; border-style: none;"  width=700 />
+
+---
+
+### Git Clients
+
+#### Git Kraken
+
+<img src="images/kraken.png" style="background: transparent; border-style: none;"  width=700 />
+
+***
+
+### Danke
+
+* https://book.git-scm.com/book/en/v2
+* https://roadtoalm.com/2013/07/19/a-starters-guide-to-git-for-tfs-gitwits/
