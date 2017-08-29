@@ -147,6 +147,14 @@ Martin Gondermann - [@magicmonty](http://www.twitter.com/magicmonty)
 
 ### Git Clients
 
+#### Visual Studio integriert
+
+<img src="images/vs.png" style="background: transparent; border-style: none;"  width=700 />
+
+---
+
+### Git Clients
+
 #### SourceTree
 
 <img src="images/sourcetree.png" style="background: transparent; border-style: none;"  width=700 />
@@ -166,6 +174,72 @@ Martin Gondermann - [@magicmonty](http://www.twitter.com/magicmonty)
 #### Git Kraken
 
 <img src="images/kraken.png" style="background: transparent; border-style: none;"  width=700 />
+
+***
+
+### GitLab
+
+#### aka "TFS für Git"
+
+* Zentrales Repository-Management
+* CI Server (optional)
+* Wiki per Projekt (optional)
+* Issue-Management
+  * abgeschaltet und nach JIRA umgeleitet
+
+***
+
+### GitLab Workflow
+
+#### Production branch mit GitLab flow
+
+<img src="images/production_branch.png" style="background: transparent; border-style: none;" width="300" />
+
+---
+
+### GitLab Workflow
+
+#### Environment branches mit GitLab flow
+
+<img src="images/environment_branches.png" style="background: transparent; border-style: none;" width="400" />
+
+---
+
+### GitLab Workflow
+
+#### Release branches mit GitLab flow
+
+<img src="images/release_branches.png" style="background: transparent; border-style: none;" width="400" />
+
+---
+
+### GitLab Workflow
+
+#### Andere Branching-Strategien
+
+* Feature/CR/Bugfix-Branches
+  * relativ kurzlebig
+  * Werden in Release-, Environment- oder Production-Branches gemerged
+  * Ersatz für ShelveSets in FAEP
+
+---
+
+### GitLab Workflow
+
+#### Merge Requests / Automatischer Code Review
+
+<img src="images/merge_requests.png" style="background: transparent; border-style: none;" width="700" />
+
+---
+
+### GitLab Workflow
+
+#### Weitere Infos
+
+* https://about.gitlab.com/2014/09/29/gitlab-flow/
+
+***
+- data-background : images/demo-time.gif
 
 ***
 
