@@ -230,14 +230,6 @@ Martin Gondermann - [@magicmonty](http://www.twitter.com/magicmonty)
 
 <img src="images/merge_requests.png" style="background: transparent; border-style: none;" width="700" />
 
----
-
-### GitLab Workflow
-
-#### Weitere Infos
-
-* https://about.gitlab.com/2014/09/29/gitlab-flow/
-
 ***
 - data-background : images/demo-time.gif
 
@@ -247,3 +239,4 @@ Martin Gondermann - [@magicmonty](http://www.twitter.com/magicmonty)
 
 * https://book.git-scm.com/book/en/v2
 * https://roadtoalm.com/2013/07/19/a-starters-guide-to-git-for-tfs-gitwits/
+* https://about.gitlab.com/2014/09/29/gitlab-flow/
