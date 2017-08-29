@@ -1,0 +1,384 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Git für TFS Benutzer</title>
+    <meta name="description" content="Einführung in Git und GitLab">
+    <meta name="author" content="Martin Gondermann">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="//code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="//code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/Beige.css" id="theme">
+    <link type="text/css" rel="stylesheet" href="fsharp.formatting/styles/style.css" />
+    <link type="text/css" rel="stylesheet" href="fsharp.formatting/styles/deedle.css" />
+    <link type="text/css" rel="stylesheet" href="css/custom.css" />
+    <script src="fsharp.formatting/styles/tips.js" type="text/javascript"></script>
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+    <link rel="stylesheet" href="css/fsreveal.css">
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+    </script>
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+    <script language="javascript" type="text/javascript">
+        function init()
+        {
+            websocket = new WebSocket("ws://"+window.location.host+"/websocket");
+            websocket.onmessage = function(evt) { location.reload(); };
+        }
+        window.addEventListener("load", init, false);
+    </script>
+</head>
+<body>
+    <div class="reveal">
+        
+        <!-- Any section element inside of this container is displayed as a slide -->
+        <div class="slides">
+            <section >
+<h2>Git für TFS Benutzer</h2>
+<br />
+<br />
+<h3>Einführung in Git und GitLab</h3>
+<p><br />
+<br />
+Martin Gondermann - <a href="http://www.twitter.com/magicmonty">@magicmonty</a></p>
+</section>
+<section >
+<section >
+<h3>TLDR</h3>
+<h4>Vergleich TFS ↔ Git</h4>
+<table>
+<thead>
+<tr class="header">
+<th><p>TFS</p></th>
+<th><p>Git</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><p>Zentralisiert</p></td>
+<td><p>Verteilt</p></td>
+</tr>
+<tr class="even">
+<td><p>Workspace</p></td>
+<td><p>Repository (aka. "Repo")</p></td>
+</tr>
+<tr class="odd">
+<td><p>Changeset</p></td>
+<td><p>Commit hash</p></td>
+</tr>
+<tr class="even">
+<td><p>Code Review</p></td>
+<td><p>Merge- oder Pull-Request</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section >
+<h3>TLDR</h3>
+<h4>Vergleich TFS ↔ Git</h4>
+<table>
+<thead>
+<tr class="header">
+<th><p>TFS</p></th>
+<th><p>Git</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><p>Get Latest</p></td>
+<td><p><code>clone</code> (1. mal) bzw. <code>pull</code></p></td>
+</tr>
+<tr class="even">
+<td><p>Check in</p></td>
+<td><p><code>git commit</code> &amp; <code>git push</code></p></td>
+</tr>
+<tr class="odd">
+<td><p>Check out</p></td>
+<td><p>Nicht notwendig</p></td>
+</tr>
+<tr class="even">
+<td><p>Pending changes</p></td>
+<td><p><code>git status</code></p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section >
+<h3>TLDR</h3>
+<h4>Vergleich TFS ↔ Git</h4>
+<table>
+<thead>
+<tr class="header">
+<th><p>TFS</p></th>
+<th><p>Git</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><p>Branch</p></td>
+<td><p>Branch - <code>git branch</code></p></td>
+</tr>
+<tr class="even">
+<td><p>Label</p></td>
+<td><p>Tag - <code>git tag</code></p></td>
+</tr>
+<tr class="odd">
+<td><p>Shelveset</p></td>
+<td><p>Stash - <code>git stash</code></p></td>
+</tr>
+<tr class="even">
+<td><p>Merge</p></td>
+<td><p>Merge - <code>git merge</code></p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+<section >
+<section >
+<h3>Zentralisiert vs. Verteilt</h3>
+<h4>Zentralisiert</h4>
+<img src="images/centralized.png" style="background: transparent; border-style: none;"  width=600 />
+</section>
+<section >
+<h3>Zentralisiert vs. Verteilt</h3>
+<h4>verteilt</h4>
+<img src="images/distributed.png" style="background: transparent; border-style: none;"  width=400 />
+</section>
+</section>
+<section >
+<section >
+<h3>Snapshots vs. Deltas</h3>
+<h4>TFS - Deltas</h4>
+<img src="images/deltas.png" style="background: transparent; border-style: none;"  width=700 />
+<aside class="notes">
+Der Hauptunterschied zwischen Git und anderen VCS (Subversion and friends included) ist die Art in der Git seine Daten sieht.<br/>
+Die meisten anderen System speichern Informationen als eine Liste von Datei-basierten Änderungen.<br/>
+Diese Systeme betrachten die Informationen als eine Menge von Dateien und den Änderungen, die auf jeder Datei über die Zeit gemacht werden.<br/>
+</aside>
+</section>
+<section >
+<h3>Snapshots vs. Deltas</h3>
+<h4>Git - Snapshots</h4>
+<img src="images/snapshots.png" style="background: transparent; border-style: none;"  width=700 />
+<aside class="notes">
+Git betrachtet seine Daten eher als einen Strom von Snapshots eines Miniatur-Dateisystems.<br/>
+Jedesmal, wenn man commited, macht Git einfach gesagt ein Snapshot des aktuellen Zustands aller Dateien zu diesem Zeitpunkt und speichert eine Referenz.<br/>
+Um effizient zu sein, speichert Git nicht geänderte Dateien nicht, sondern nur einen Link zur vorhergenden identischen Version.<br/>
+</aside>
+</section>
+</section>
+<section >
+<h3>Commit vs. Check in</h3>
+<ul>
+<li>
+<strong>TFS:</strong>
+<ul>
+<li>Check in sendet geänderte Daten an den Server</li>
+<li>ein lokaler Commit ist nicht möglich</li>
+</ul>
+</li>
+<li>
+<strong>Git:</strong>
+<ul>
+<li><code>commit</code> speichert Änderungen im lokalen Repository</li>
+<li><code>push</code> sendet die Änderungen im lokalen Repository an den Server</li>
+</ul>
+</li>
+</ul>
+</section>
+<section >
+<section >
+<h3>Branching</h3>
+<h4>TFS</h4>
+<ul>
+<li>Branch wird auf dem Server erstellt</li>
+<li>Branch wird dann in einem extra Verzeichnis auf den lokalen Rechner synchronisiert</li>
+<li>relative langsame ("teure") Operation, daher nur selten benutzt</li>
+</ul>
+</section>
+<section >
+<h3>Branching</h3>
+<h4>Git</h4>
+<ul>
+<li>Branch erstellen ist nur das Setzen eines Namens auf einen Commit</li>
+<li>Es wird immer im selben Verzeichnis operiert.</li>
+<li>Branch wechseln ist sehr schnell, da nur die geänderten Dateien im Verzeichnis angepasst werden</li>
+<li>
+Wird häufig benutzt z.B. für
+<ul>
+<li>Feature-Branches (kurzlebig)</li>
+<li>Bugfix-Branches (kurzlebig)</li>
+<li>Release-Branches (langlebig)</li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section >
+<section >
+<h3>Git Clients</h3>
+<ul>
+<li>Kommandozeile: <code>git</code> Kommando</li>
+<li>
+Eingebaut in Visual Studio / VS Code
+<ul>
+<li>nur die einfachsten Kommandos, für den normalen Betrieb aber durchaus ausreichend</li>
+</ul>
+</li>
+<li>
+externe Grafische Clients:
+<ul>
+<li>SourceTree - <a href="https://www.sourcetreeapp.com/">https://www.sourcetreeapp.com/</a></li>
+<li>Tower - <a href="https://www.git-tower.com/windows/">https://www.git-tower.com/windows/</a></li>
+<li>GitKraken - <a href="https://www.gitkraken.com/">https://www.gitkraken.com/</a></li>
+</ul>
+</li>
+</ul>
+</section>
+<section >
+<h3>Git Clients</h3>
+<h4>Visual Studio integriert</h4>
+<img src="images/vs.png" style="background: transparent; border-style: none;"  width=700 />
+</section>
+<section >
+<h3>Git Clients</h3>
+<h4>SourceTree</h4>
+<img src="images/sourcetree.png" style="background: transparent; border-style: none;"  width=700 />
+</section>
+<section >
+<h3>Git Clients</h3>
+<h4>Tower</h4>
+<img src="images/tower.png" style="background: transparent; border-style: none;"  width=700 />
+</section>
+<section >
+<h3>Git Clients</h3>
+<h4>Git Kraken</h4>
+<img src="images/kraken.png" style="background: transparent; border-style: none;"  width=700 />
+</section>
+</section>
+<section >
+<h3>GitLab</h3>
+<h4>aka "TFS für Git"</h4>
+<ul>
+<li>Zentrales Repository-Management</li>
+<li>CI Server (optional)</li>
+<li>Wiki per Projekt (optional)</li>
+<li>
+Issue-Management
+<ul>
+<li>abgeschaltet und nach JIRA umgeleitet</li>
+</ul>
+</li>
+</ul>
+</section>
+<section >
+<section >
+<h3>GitLab Workflow</h3>
+<h4>Production branch mit GitLab flow</h4>
+<img src="images/production_branch.png" style="background: transparent; border-style: none;" width="300" />
+</section>
+<section >
+<h3>GitLab Workflow</h3>
+<h4>Environment branches mit GitLab flow</h4>
+<img src="images/environment_branches.png" style="background: transparent; border-style: none;" width="400" />
+</section>
+<section >
+<h3>GitLab Workflow</h3>
+<h4>Release branches mit GitLab flow</h4>
+<img src="images/release_branches.png" style="background: transparent; border-style: none;" width="400" />
+</section>
+<section >
+<h3>GitLab Workflow</h3>
+<h4>Andere Branching-Strategien</h4>
+<ul>
+<li>
+Feature/CR/Bugfix-Branches
+<ul>
+<li>relativ kurzlebig</li>
+<li>Werden in Release-, Environment- oder Production-Branches gemerged</li>
+<li>Ersatz für ShelveSets in FAEP</li>
+</ul>
+</li>
+</ul>
+</section>
+<section >
+<h3>GitLab Workflow</h3>
+<h4>Merge Requests / Automatischer Code Review</h4>
+<img src="images/merge_requests.png" style="background: transparent; border-style: none;" width="700" />
+</section>
+<section >
+<h3>GitLab Workflow</h3>
+<h4>Weitere Infos</h4>
+<ul>
+<li><a href="https://about.gitlab.com/2014/09/29/gitlab-flow/">https://about.gitlab.com/2014/09/29/gitlab-flow/</a></li>
+</ul>
+</section>
+</section>
+<section data-background="images/demo-time.gif">
+</section>
+<section >
+<h3>Danke</h3>
+<ul>
+<li><a href="https://book.git-scm.com/book/en/v2">https://book.git-scm.com/book/en/v2</a></li>
+<li><a href="https://roadtoalm.com/2013/07/19/a-starters-guide-to-git-for-tfs-gitwits/">https://roadtoalm.com/2013/07/19/a-starters-guide-to-git-for-tfs-gitwits/</a></li>
+</ul>
+</section>
+
+
+        </div>
+    </div>
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script>
+        // Add the nohighlight class and data-noescape attribute to code elements that have already been formatted by FSharp.Formatting
+        $('pre.highlighted code').addClass('nohighlight').attr('data-noescape', '');
+
+        // Full list of configuration options available here:
+        // https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+
+            transition: 'slide', // default/cube/page/concave/zoom/linear/fade/none
+
+            // Parallax scrolling
+            // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+            // parallaxBackgroundSize: '2100px 900px',
+
+            // Optional libraries used to extend on reveal.js
+            dependencies: [
+                { src: 'lib/js/classList.js', condition: function () { return !document.body.classList; } },
+                { src: 'plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                { src: 'plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                { src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
+                { src: 'plugin/zoom-js/zoom.js', async: true, condition: function () { return !!document.body.classList; } },
+                { src: 'plugin/notes/notes.js', async: true, condition: function () { return !!document.body.classList; } }
+            ]
+        });
+
+    </script>
+</body>
+</html>
+
