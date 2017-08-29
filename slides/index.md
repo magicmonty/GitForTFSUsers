@@ -1,7 +1,7 @@
 - title : Git für TFS Benutzer
 - description : Einführung in Git und GitLab
 - author : Martin Gondermann
-- theme : Beige
+- theme : beige
 - transition : slide
 
 ***
